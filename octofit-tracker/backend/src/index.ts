@@ -19,8 +19,24 @@ const getApiUrl = (): string => {
   return `http://localhost:${port}`;
 };
 
-// Initialize Express middleware
-app.use(cors());
+// Configure CORS to allow Codespaces and localhost (curl/no-origin allowed)
+const apiUrl = getApiUrl();
+const allowedOrigins = [
+  apiUrl,
+  `http://localhost:${port}`,
+  `http://127.0.0.1:${port}`,
+];
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true); // allow non-browser requests (curl, server-to-server)
+      if (allowedOrigins.includes(origin)) return callback(null, true);
+      return callback(new Error('CORS policy: origin not allowed'));
+    },
+    credentials: true,
+  })
+);
 app.use(express.json());
 
 // Health check endpoint
@@ -50,7 +66,7 @@ async function startServer() {
     await mongoose.connect(connectionString);
     console.log('Connected to octofit_db');
 
-    app.listen(port, () => {
+    app.listen(port, '0.0.0.0', () => {
       console.log(`OctoFit Tracker backend listening on port ${port}`);
       console.log(`API URL: ${getApiUrl()}`);
     });
