@@ -14,18 +14,22 @@ const connectionString = process.env.MONGODB_URI || 'mongodb://localhost:27017/o
 // Codespaces-aware API URL
 const getApiUrl = (): string => {
   if (process.env.CODESPACE_NAME) {
-    return `https://${process.env.CODESPACE_NAME}-8000.app.github.dev`;
+    // Prefer the `.github.dev` host form (e.g. https://<CODESPACE_NAME>.github.dev)
+    return `https://${process.env.CODESPACE_NAME}.github.dev`;
   }
   return `http://localhost:${port}`;
 };
 
 // Configure CORS to allow Codespaces and localhost (curl/no-origin allowed)
 const apiUrl = getApiUrl();
+// Allow both common Codespaces URL patterns and localhost variants
 const allowedOrigins = [
   apiUrl,
+  // Older / alternate Codespaces forwarding pattern that includes the port and app.github.dev
+  process.env.CODESPACE_NAME ? `https://${process.env.CODESPACE_NAME}-8000.app.github.dev` : undefined,
   `http://localhost:${port}`,
   `http://127.0.0.1:${port}`,
-];
+].filter(Boolean) as string[];
 
 app.use(
   cors({
