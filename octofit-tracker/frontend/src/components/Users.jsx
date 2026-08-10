@@ -5,11 +5,12 @@ const Users = () => {
   const [users, setUsers] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
+  const apiEndpoint = getApiEndpoint('users'); // https://${import.meta.env.VITE_CODESPACE_NAME}-8000.app.github.dev/api/users
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const result = await parseApiResponse(await fetch(getApiEndpoint('users')));
+        const result = await parseApiResponse(await fetch(apiEndpoint));
         setUsers(normalizeApiData(result));
       } catch (error_) {
         setError(error_.message);

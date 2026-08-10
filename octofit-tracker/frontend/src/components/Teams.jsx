@@ -5,11 +5,12 @@ const Teams = () => {
   const [teams, setTeams] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
+  const apiEndpoint = getApiEndpoint('teams'); // https://${import.meta.env.VITE_CODESPACE_NAME}-8000.app.github.dev/api/teams
 
   useEffect(() => {
     const fetchTeams = async () => {
       try {
-        const result = await parseApiResponse(await fetch(getApiEndpoint('teams')));
+        const result = await parseApiResponse(await fetch(apiEndpoint));
         setTeams(normalizeApiData(result));
       } catch (error_) {
         setError(error_.message);

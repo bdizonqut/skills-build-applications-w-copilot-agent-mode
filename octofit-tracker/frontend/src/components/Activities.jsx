@@ -5,11 +5,12 @@ const Activities = () => {
   const [activities, setActivities] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
+  const apiEndpoint = getApiEndpoint('activities'); // https://${import.meta.env.VITE_CODESPACE_NAME}-8000.app.github.dev/api/activities
 
   useEffect(() => {
     const fetchActivities = async () => {
       try {
-        const result = await parseApiResponse(await fetch(getApiEndpoint('activities')));
+        const result = await parseApiResponse(await fetch(apiEndpoint));
         setActivities(normalizeApiData(result));
       } catch (error_) {
         setError(error_.message);

@@ -5,11 +5,12 @@ const Leaderboard = () => {
   const [entries, setEntries] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
+  const apiEndpoint = getApiEndpoint('leaderboard'); // https://${import.meta.env.VITE_CODESPACE_NAME}-8000.app.github.dev/api/leaderboard
 
   useEffect(() => {
     const fetchLeaderboard = async () => {
       try {
-        const result = await parseApiResponse(await fetch(getApiEndpoint('leaderboard')));
+        const result = await parseApiResponse(await fetch(apiEndpoint));
         setEntries(normalizeApiData(result));
       } catch (error_) {
         setError(error_.message);

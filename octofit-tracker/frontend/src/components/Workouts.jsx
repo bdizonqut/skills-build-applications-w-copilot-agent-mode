@@ -5,11 +5,12 @@ const Workouts = () => {
   const [workouts, setWorkouts] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
+  const apiEndpoint = getApiEndpoint('workouts'); // https://${import.meta.env.VITE_CODESPACE_NAME}-8000.app.github.dev/api/workouts
 
   useEffect(() => {
     const fetchWorkouts = async () => {
       try {
-        const result = await parseApiResponse(await fetch(getApiEndpoint('workouts')));
+        const result = await parseApiResponse(await fetch(apiEndpoint));
         setWorkouts(normalizeApiData(result));
       } catch (error_) {
         setError(error_.message);
